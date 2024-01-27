@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timed Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #quiz-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="quiz-container">
+  <h1>Timed Quiz</h1>
+  <p id="question"></p>
+  <form id="quiz-form">
+    <label>
+      <input type="radio" name="answer" value="option1">
+      <span id="option1"></span>
+    </label>
+    <br>
+    <label>
+      <input type="radio" name="answer" value="option2">
+      <span id="option2"></span>
+    </label>
+    <br>
+    <label>
+      <input type="radio" name="answer" value="option3">
+      <span id="option3"></span>
+    </label>
+    <br>
+    <br>
+    <button type="button" onclick="checkAnswer()">Submit Answer</button>
+  </form>
+  <p id="result"></p>
+  <p id="timer">Time remaining: <span id="time">10</span> seconds</p>
+</div>
+
+<script>
+  const quizData = [
+    {
+      question: "What is the capital of France?",
+      options: ["Berlin", "Madrid", "Paris"],
+      correctAnswer: "option3"
+    },
+    {
+      question: "Which planet is known as the Red Planet?",
+      options: ["Mars", "Jupiter", "Venus"],
+      correctAnswer: "option1"
+    }
+    // Add more questions as needed
+  ];
+
+  let currentQuestion = 0;
+  let score = 0;
+  let timer;
+
+  function startQuiz() {
+    showQuestion();
+    timer = setInterval(updateTimer, 1000);
+  }
+
+  function showQuestion() {
+    const questionElement = document.getElementById("question");
+    const option1Element = document.getElementById("option1");
+    const option2Element = document.getElementById("option2");
+    const option3Element = document.getElementById("option3");
+
+    const currentQuiz = quizData[currentQuestion];
+    questionElement.textContent = currentQuiz.question;
+    option1Element.textContent = currentQuiz.options[0];
+    option2Element.textContent = currentQuiz.options[1];
+    option3Element.textContent = currentQuiz.options[2];
+  }
+
+  function checkAnswer() {
+    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    if (!selectedAnswer) {
+      alert("Please select an answer!");
+      return;
+    }
+
+    const currentQuiz = quizData[currentQuestion];
+    const userAnswer = selectedAnswer.value;
+
+    if (userAnswer === currentQuiz.correctAnswer) {
+      score++;
+    }
+
+    currentQuestion++;
+    if (currentQuestion < quizData.length) {
+      showQuestion();
+    } else {
+      endQuiz();
+    }
+  }
+
+  function endQuiz() {
+    clearInterval(timer);
+    const resultElement = document.getElementById("result");
+    const timerElement = document.getElementById("timer");
+
+    resultElement.textContent = `Quiz completed! Your score: ${score} out of ${quizData.length}`;
+    timerElement.textContent = "Time's up!";
+  }
+
+  function updateTimer() {
+    const timeElement = document.getElementById("time");
+    let timeLeft = parseInt(timeElement.textContent);
+    
+    if (timeLeft > 0) {
+      timeLeft--;
+      timeElement.textContent = timeLeft;
+    } else {
+      endQuiz();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", startQuiz);
+</script>
+
+</body>
+</html>
